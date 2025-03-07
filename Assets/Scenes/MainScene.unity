@@ -671,6 +671,7 @@ GameObject:
   - component: {fileID: 428826369}
   - component: {fileID: 428826371}
   - component: {fileID: 428826370}
+  - component: {fileID: 428826372}
   m_Layer: 5
   m_Name: Hunger
   m_TagString: Untagged
@@ -736,6 +737,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 428826368}
   m_CullTransparentMesh: 1
+--- !u!114 &428826372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 428826368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcc90f26d70b14441a48112762732050, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  curValue: 0
+  maxValue: 500
+  startValue: 500
+  passiveValue: 20
+  uiBar: {fileID: 640504792}
 --- !u!1 &497590072
 GameObject:
   m_ObjectHideFlags: 0
@@ -1711,6 +1729,7 @@ GameObject:
   - component: {fileID: 1016025144}
   - component: {fileID: 1016025146}
   - component: {fileID: 1016025145}
+  - component: {fileID: 1016025147}
   m_Layer: 5
   m_Name: Health
   m_TagString: Untagged
@@ -1776,6 +1795,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1016025143}
   m_CullTransparentMesh: 1
+--- !u!114 &1016025147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1016025143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcc90f26d70b14441a48112762732050, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  curValue: 0
+  maxValue: 100
+  startValue: 100
+  passiveValue: 1
+  uiBar: {fileID: 305033719}
 --- !u!1 &1019835825
 GameObject:
   m_ObjectHideFlags: 0
@@ -2704,6 +2740,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1894778772}
   - component: {fileID: 1894778773}
+  - component: {fileID: 1894778774}
   m_Layer: 5
   m_Name: Conditions
   m_TagString: Untagged
@@ -2759,6 +2796,21 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &1894778774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1894778771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d04cb2ceedf9fb47b260cb410fb6255, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: 1016025147}
+  hunger: {fileID: 428826372}
+  stamina: {fileID: 2032854207}
 --- !u!1 &1926348230
 GameObject:
   m_ObjectHideFlags: 0
@@ -2948,6 +3000,7 @@ GameObject:
   - component: {fileID: 2032854204}
   - component: {fileID: 2032854206}
   - component: {fileID: 2032854205}
+  - component: {fileID: 2032854207}
   m_Layer: 5
   m_Name: Stamina
   m_TagString: Untagged
@@ -3013,6 +3066,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2032854203}
   m_CullTransparentMesh: 1
+--- !u!114 &2032854207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2032854203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcc90f26d70b14441a48112762732050, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  curValue: 0
+  maxValue: 100
+  startValue: 100
+  passiveValue: 5
+  uiBar: {fileID: 198184789}
 --- !u!1001 &2044587084
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3158,6 +3228,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2350652681907635850, guid: 83628a2e699576147adabb30587f44d4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3890021085648951857}
+    - targetCorrespondingSourceObject: {fileID: 2350652681907635850, guid: 83628a2e699576147adabb30587f44d4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3890021085648951862}
   m_SourcePrefab: {fileID: 100100000, guid: 83628a2e699576147adabb30587f44d4, type: 3}
 --- !u!1 &3890021085648951855 stripped
 GameObject:
@@ -3273,11 +3346,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 3890021085648951857}
+  condition: {fileID: 0}
 --- !u!4 &3890021085648951861 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1327674205686831306, guid: 83628a2e699576147adabb30587f44d4, type: 3}
   m_PrefabInstance: {fileID: 3890021085648951854}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3890021085648951862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3890021085648951855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa7031c1d1230724a94a55ced655ccba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiCondition: {fileID: 0}
+  noHungerHealthDecay: 2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
