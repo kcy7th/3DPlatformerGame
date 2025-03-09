@@ -13,7 +13,7 @@ public enum ConsumableType
     Health
 }
 
-public enum EquipEffectType
+public enum EffectType
 {
     None,         // 효과 없음
     DefenseBoost, // 방어력 증가
@@ -46,7 +46,7 @@ public class ItemData : ScriptableObject
 
 
     [Header("Equipable Effect")]  
-    public EquipEffectType effectType;  
+    public EffectType effectType;  
     public float effectValue;  
     public float duration; 
 }

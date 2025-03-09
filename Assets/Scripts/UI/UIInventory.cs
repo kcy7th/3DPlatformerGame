@@ -24,10 +24,12 @@ public class UIInventory : MonoBehaviour
     public GameObject unEquipButton;
     public GameObject dropButton;
 
-    private int curEquipIndex;
+    private int curEquipIndex = -1; // 기본값 설정
 
     private PlayerController controller;
     private PlayerCondition condition;
+
+    private Coroutine activeEffectCoroutine; // 현재 효과의 Coroutine 저장
 
     void Start()
     {
@@ -38,7 +40,7 @@ public class UIInventory : MonoBehaviour
         controller.inventory -= Toggle;
         controller.inventory += Toggle;
 
-        CharacterManager.Instance.Player.addItem += AddItem;  // 아이템 파밍 시
+        CharacterManager.Instance.Player.addItem += AddItem;
 
         // 인벤토리 초기화
         inventoryWindow.SetActive(false);
@@ -58,7 +60,7 @@ public class UIInventory : MonoBehaviour
     void ClearSelectedItemWindow()
     {
         selectedItem = null;
-        
+
         selectedItemName.text = string.Empty;
         selectedItemDescription.text = string.Empty;
         selectedItemStatName.text = string.Empty;
@@ -84,18 +86,15 @@ public class UIInventory : MonoBehaviour
         }
     }
 
-
     public bool IsOpen()
     {
         return inventoryWindow.activeInHierarchy;
     }
 
-
     public void AddItem()
     {
         ItemData data = CharacterManager.Instance.Player.itemData;
 
-        // 아이템이 중복 가능한지 canStack
         if (data.canStack)
         {
             ItemSlot slot = GetItemStack(data);
@@ -108,10 +107,8 @@ public class UIInventory : MonoBehaviour
             }
         }
 
-        // 빈 슬롯 찾기
         ItemSlot emptySlot = GetEmptySlot();
 
-        // 빈 슬롯이 있다면
         if (emptySlot != null)
         {
             emptySlot.item = data;
@@ -121,12 +118,10 @@ public class UIInventory : MonoBehaviour
             return;
         }
 
-        // 빈 슬롯이 없다면 버리기
         ThrowItem(data);
         CharacterManager.Instance.Player.itemData = null;
     }
 
-    // UI 정보 새로고침
     public void UpdateUI()
     {
         for (int i = 0; i < slots.Length; i++)
@@ -142,7 +137,6 @@ public class UIInventory : MonoBehaviour
         }
     }
 
-    // 여러개 가질 수 있는 아이템의 정보 찾아서 return
     ItemSlot GetItemStack(ItemData data)
     {
         for (int i = 0; i < slots.Length; i++)
@@ -155,7 +149,6 @@ public class UIInventory : MonoBehaviour
         return null;
     }
 
-    // 슬롯의 item 정보가 비어있는 정보 return
     ItemSlot GetEmptySlot()
     {
         for (int i = 0; i < slots.Length; i++)
@@ -198,28 +191,43 @@ public class UIInventory : MonoBehaviour
         dropButton.SetActive(true);
     }
 
-    public void OnUseButton()
+    public void OnEquipButton()
     {
-        if (selectedItem.item.type == ItemType.Consumable)
-        {
-            for (int i = 0; i < selectedItem.item.consumables.Length; i++)
-            {
-                switch (selectedItem.item.consumables[i].type)
-                {
-                    case ConsumableType.Health:
-                        condition.Heal(selectedItem.item.consumables[i].value); break;
-                    case ConsumableType.Hunger:
-                        condition.Eat(selectedItem.item.consumables[i].value); break;
-                }
-            }
-            RemoveSelctedItem();
-        }
-    }
+        if (selectedItem == null || selectedItem.item == null) return;
 
+        if (curEquipIndex != -1)
+        {
+            UnEquip(curEquipIndex);
+        }
+
+        slots[selectedItemIndex].equipped = true;
+        curEquipIndex = selectedItemIndex;
+        ApplyItemEffect(selectedItem.item);
+
+        equipButton.SetActive(false);
+        unEquipButton.SetActive(true);
+
+        UpdateUI();
+    }
     public void OnDropButton()
     {
         ThrowItem(selectedItem.item);
         RemoveSelctedItem();
+    }
+
+    public void UnEquip(int index)
+    {
+        if (slots[index].item == null || !slots[index].equipped) return;
+
+        slots[index].equipped = false;
+        curEquipIndex = -1;
+
+        RemoveItemEffect(slots[index].item);
+
+        equipButton.SetActive(true);
+        unEquipButton.SetActive(false);
+
+        UpdateUI();
     }
 
     void RemoveSelctedItem()
@@ -240,19 +248,45 @@ public class UIInventory : MonoBehaviour
         UpdateUI();
     }
 
-
-    public bool HasItem(ItemData item, int quantity)
+    private void ApplyItemEffect(ItemData item)
     {
-        return false;
+        if (activeEffectCoroutine != null)
+        {
+            StopCoroutine(activeEffectCoroutine);
+        }
+        activeEffectCoroutine = StartCoroutine(TemporaryEffect(item));
     }
 
-    public void UnEquip(int index)
+    private IEnumerator TemporaryEffect(ItemData item)
     {
-        if (slots[index].item == null) return;
-        if (!slots[index].equipped) return; // 이미 장착 해제된 상태면 실행하지 않음
+        Debug.Log($"{item.displayName} 효과 적용: {item.effectType} +{item.effectValue} ({item.duration}초 동안)");
 
-        slots[index].equipped = false; // 장착 해제
-        curEquipIndex = -1; // 현재 장착한 아이템 없음
-        UpdateUI(); // UI 갱신
+        if (item.effectType == EffectType.DefenseBoost)
+        {
+            condition.currentDefense += item.effectValue;
+        }
+        else if (item.effectType == EffectType.AttackBoost)
+        {
+            condition.currentAttackPower += item.effectValue;
+        }
+
+        yield return new WaitForSeconds(item.duration);
+
+        RemoveItemEffect(item);
+        activeEffectCoroutine = null;
+    }
+
+    private void RemoveItemEffect(ItemData item)
+    {
+        Debug.Log($"{item.displayName} 효과 해제");
+
+        if (item.effectType == EffectType.DefenseBoost)
+        {
+            condition.currentDefense -= item.effectValue;
+        }
+        else if (item.effectType == EffectType.AttackBoost)
+        {
+            condition.currentAttackPower -= item.effectValue;
+        }
     }
 }

@@ -1,9 +1,10 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public interface IDamagable
 {
-    void TakePhysicalDamage(int damagerAmount);
+    void TakePhysicalDamage(int damageAmount);
 }
 
 public class PlayerCondition : MonoBehaviour, IDamagable
@@ -17,8 +18,19 @@ public class PlayerCondition : MonoBehaviour, IDamagable
     public float noHungerHealthDecay;
     public event Action onTakeDamage;
 
-    public float defense = 0f;
-    public float attackPower = 1f;
+    public float baseDefense = 0f;
+    public float baseAttackPower = 1f;
+
+    public float currentDefense;
+    public float currentAttackPower;
+
+    private Coroutine activeEffectCoroutine;
+
+    private void Start()
+    {
+        currentDefense = baseDefense;
+        currentAttackPower = baseAttackPower;
+    }
 
     private void Update()
     {
@@ -53,7 +65,67 @@ public class PlayerCondition : MonoBehaviour, IDamagable
 
     public void TakePhysicalDamage(int damageAmount)
     {
-        health.Subtract(damageAmount);
+        float finalDamage = damageAmount - currentDefense;
+        if (finalDamage < 0) finalDamage = 0;
+
+        health.Subtract(finalDamage);
         onTakeDamage?.Invoke();
     }
+
+    public void ApplyEffect(ItemData item)
+    {
+        if (item.effectType == EffectType.None) return;
+
+        Debug.Log($"{item.displayName} ÀåÂøµÊ. È¿°ú: {item.effectType} +{item.effectValue} ({item.duration}ÃÊ)");
+
+        switch (item.effectType)
+        {
+            case EffectType.DefenseBoost:
+                currentDefense += item.effectValue;
+                break;
+            case EffectType.AttackBoost:
+                currentAttackPower += item.effectValue;
+                break;
+        }
+
+        if (activeEffectCoroutine != null)
+        {
+            StopCoroutine(activeEffectCoroutine);
+        }
+        activeEffectCoroutine = StartCoroutine(RemoveEffectAfterDuration(item));
+    }
+
+    private IEnumerator RemoveEffectAfterDuration(ItemData item)
+    {
+        yield return new WaitForSeconds(item.duration);
+
+        switch (item.effectType)
+        {
+            case EffectType.DefenseBoost:
+                currentDefense -= item.effectValue;
+                break;
+            case EffectType.AttackBoost:
+                currentAttackPower -= item.effectValue;
+                break;
+        }
+
+        Debug.Log($"{item.displayName} È¿°ú ³¡");
+        activeEffectCoroutine = null;
+    }
+
+    public void RemoveItemEffect(ItemData item)
+    {
+        switch (item.effectType)
+        {
+            case EffectType.DefenseBoost:
+                currentDefense -= item.effectValue;
+                break;
+            case EffectType.AttackBoost:
+                currentAttackPower -= item.effectValue;
+                break;
+        }
+    }
+
+    public float GetDefense() => currentDefense;
+    public float GetAttackPower() => currentAttackPower;
 }
