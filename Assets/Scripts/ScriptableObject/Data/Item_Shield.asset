@@ -20,3 +20,6 @@ MonoBehaviour:
   canStack: 0
   maxStackAmount: 0
   consumables: []
+  effectType: 1
+  effectValue: 5
+  duration: 10

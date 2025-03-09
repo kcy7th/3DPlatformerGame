@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
     {
         if (uiInventory != null)
         {
+            inventory = null;
             inventory = uiInventory.Toggle; 
             Debug.Log("UIInventory 연결됨"); 
         }
@@ -115,9 +116,8 @@ public class PlayerController : MonoBehaviour
         return Physics.Raycast(transform.position, Vector3.down, 1.1f, groundLayerMask);
     }
 
-    public void ToggleCursor()
+    public void ToggleCursor(bool toggle)
     {
-        bool toggle = Cursor.lockState == CursorLockMode.Locked;
         Cursor.lockState = toggle ? CursorLockMode.None : CursorLockMode.Locked;
         canLook = !toggle;
     }
@@ -127,7 +127,15 @@ public class PlayerController : MonoBehaviour
         if (callbackContext.phase == InputActionPhase.Performed && canToggleInventory)
         {
             inventory?.Invoke();
-            ToggleCursor();
+
+            canToggleInventory = false;
+            StartCoroutine(EnableInventoryToggle());
         }
+    }
+
+    private IEnumerator EnableInventoryToggle()
+    {
+        yield return new WaitForSeconds(0.2f); // 0.2초 후 다시 입력 가능
+        canToggleInventory = true;
     }
 }

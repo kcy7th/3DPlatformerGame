@@ -35,7 +35,9 @@ public class UIInventory : MonoBehaviour
         condition = CharacterManager.Instance.Player.condition;
         dropPosition = CharacterManager.Instance.Player.dropPosition;
 
-        controller.inventory += Toggle;      // inventory 키 입력 시
+        controller.inventory -= Toggle;
+        controller.inventory += Toggle;
+
         CharacterManager.Instance.Player.addItem += AddItem;  // 아이템 파밍 시
 
         // 인벤토리 초기화
@@ -72,13 +74,16 @@ public class UIInventory : MonoBehaviour
     {
         if (IsOpen())
         {
+            Debug.Log("인벤토리 닫힘");
             inventoryWindow.SetActive(false);
         }
         else
         {
+            Debug.Log("인벤토리 열림");
             inventoryWindow.SetActive(true);
         }
     }
+
 
     public bool IsOpen()
     {
