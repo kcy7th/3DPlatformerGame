@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -28,6 +29,11 @@ public class PlayerController : MonoBehaviour
 
     [HideInInspector]
     public bool canLook = true;
+    public bool canToggleInventory = true;
+
+    public Action inventory;
+
+    public UIInventory uiInventory;
 
     private void Awake()
     {
@@ -36,7 +42,15 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        if (uiInventory != null)
+        {
+            inventory = uiInventory.Toggle; 
+            Debug.Log("UIInventory ¿¬°áµÊ"); 
+        }
+        else
+        {
+            Debug.LogError("UIInventory ¿¬°á ¾ÈµÊ");
+        }
     }
 
     private void FixedUpdate()
@@ -48,7 +62,7 @@ public class PlayerController : MonoBehaviour
     {
         if (canLook)
         {
-            ThirdPersonCameraLook();
+            CameraLook();
         }
     }
 
@@ -82,7 +96,7 @@ public class PlayerController : MonoBehaviour
         rigidbody.velocity = dir;
     }
 
-    void ThirdPersonCameraLook()
+    void CameraLook()
     {
         if (cameraTransform == null || cameraPivot == null) return;
 
@@ -101,9 +115,19 @@ public class PlayerController : MonoBehaviour
         return Physics.Raycast(transform.position, Vector3.down, 1.1f, groundLayerMask);
     }
 
-    public void ToggleCursor(bool toggle)
+    public void ToggleCursor()
     {
+        bool toggle = Cursor.lockState == CursorLockMode.Locked;
         Cursor.lockState = toggle ? CursorLockMode.None : CursorLockMode.Locked;
         canLook = !toggle;
+    }
+
+    public void OnInventoryButton(InputAction.CallbackContext callbackContext)
+    {
+        if (callbackContext.phase == InputActionPhase.Performed && canToggleInventory)
+        {
+            inventory?.Invoke();
+            ToggleCursor();
+        }
     }
 }
