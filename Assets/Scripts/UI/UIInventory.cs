@@ -191,6 +191,24 @@ public class UIInventory : MonoBehaviour
         dropButton.SetActive(true);
     }
 
+    public void OnUseButton()
+    {
+        if (selectedItem.item.type == ItemType.Consumable)
+        {
+            for (int i = 0; i < selectedItem.item.consumables.Length; i++)
+            {
+                switch (selectedItem.item.consumables[i].type)
+                {
+                    case ConsumableType.Health:
+                        condition.Heal(selectedItem.item.consumables[i].value); break;
+                    case ConsumableType.Hunger:
+                        condition.Eat(selectedItem.item.consumables[i].value); break;
+                }
+            }
+            RemoveSelctedItem();
+        }
+    }
+
     public void OnEquipButton()
     {
         if (selectedItem == null || selectedItem.item == null) return;
@@ -202,7 +220,10 @@ public class UIInventory : MonoBehaviour
 
         slots[selectedItemIndex].equipped = true;
         curEquipIndex = selectedItemIndex;
+
         ApplyItemEffect(selectedItem.item);
+
+        Debug.Log($"{selectedItem.item.displayName} ÀåÂøµÊ");
 
         equipButton.SetActive(false);
         unEquipButton.SetActive(true);
@@ -217,12 +238,14 @@ public class UIInventory : MonoBehaviour
 
     public void UnEquip(int index)
     {
-        if (slots[index].item == null || !slots[index].equipped) return;
+        if (index == -1 || slots[index].item == null || !slots[index].equipped) return;
 
         slots[index].equipped = false;
         curEquipIndex = -1;
 
         RemoveItemEffect(slots[index].item);
+
+        Debug.Log($"{slots[index].item.displayName} ÀåÂø ÇØÁ¦µÊ");
 
         equipButton.SetActive(true);
         unEquipButton.SetActive(false);
