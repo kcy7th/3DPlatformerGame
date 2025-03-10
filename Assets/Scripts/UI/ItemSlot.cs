@@ -9,8 +9,8 @@ public class ItemSlot : MonoBehaviour
     public UIInventory inventory;
     public Button button;
     public Image icon;
-    public TextMeshProUGUI quatityText;
-    private Outline outline;
+    public TextMeshProUGUI quantityText;
+    private Outline outline;  // 슬롯 테두리 효과
 
     public int index;
     public bool equipped;
@@ -23,14 +23,14 @@ public class ItemSlot : MonoBehaviour
 
     private void OnEnable()
     {
-        outline.enabled = equipped;
+        outline.enabled = equipped;  // 장착된 경우 테두리 활성화
     }
 
     public void Set()
     {
         icon.gameObject.SetActive(true);
         icon.sprite = item.icon;
-        quatityText.text = quantity > 1 ? quantity.ToString() : string.Empty;
+        quantityText.text = quantity > 1 ? quantity.ToString() : string.Empty;
 
         if (outline != null)
         {
@@ -42,11 +42,11 @@ public class ItemSlot : MonoBehaviour
     {
         item = null;
         icon.gameObject.SetActive(false);
-        quatityText.text = string.Empty;
+        quantityText.text = string.Empty;
     }
 
     public void OnClickButton()
     {
-        inventory.SelectItem(index);
+        inventory.SelectItem(index);  // 선택한 슬롯의 인덱스를 인벤에 전달
     }
 }

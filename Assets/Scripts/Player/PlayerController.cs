@@ -67,7 +67,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
     public void OnMoveInput(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Performed)
@@ -92,7 +91,7 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 dir = transform.forward * curMovementInput.y + transform.right * curMovementInput.x;
         dir *= moveSpeed;
-        dir.y = rigidbody.velocity.y;
+        dir.y = rigidbody.velocity.y;  // 기존 Y축 속도 유지
 
         rigidbody.velocity = dir;
     }
@@ -119,7 +118,7 @@ public class PlayerController : MonoBehaviour
     public void ToggleCursor(bool toggle)
     {
         Cursor.lockState = toggle ? CursorLockMode.None : CursorLockMode.Locked;
-        canLook = !toggle;
+        canLook = !toggle;  // 카메라 회전 활성화 여부
     }
 
     public void OnInventoryButton(InputAction.CallbackContext callbackContext)
@@ -128,14 +127,14 @@ public class PlayerController : MonoBehaviour
         {
             inventory?.Invoke();
 
-            canToggleInventory = false;
-            StartCoroutine(EnableInventoryToggle());
+            canToggleInventory = false;  // 중복 입력 방지
+            StartCoroutine(EnableInventoryToggle());  // 일정 시간 후 다시 활성화
         }
     }
 
     private IEnumerator EnableInventoryToggle()
     {
-        yield return new WaitForSeconds(0.2f); // 0.2초 후 다시 입력 가능
+        yield return new WaitForSeconds(0.2f); // 0.2초 대기 후 다시 입력 가능
         canToggleInventory = true;
     }
 }

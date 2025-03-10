@@ -6100,8 +6100,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1625777814}
         m_TargetAssemblyTypeName: UIInventory, Assembly-CSharp
-        m_MethodName: UnEquip
-        m_Mode: 3
+        m_MethodName: OnUpEquipButton
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

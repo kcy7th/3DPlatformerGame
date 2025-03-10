@@ -28,6 +28,7 @@ public class PlayerCondition : MonoBehaviour, IDamagable
 
     private void Start()
     {
+        // 기본 방어력 및 공격력
         currentDefense = baseDefense;
         currentAttackPower = baseAttackPower;
     }
@@ -37,11 +38,13 @@ public class PlayerCondition : MonoBehaviour, IDamagable
         hunger.Subtract(hunger.passiveValue * Time.deltaTime);
         stamina.Add(stamina.passiveValue * Time.deltaTime);
 
+        // 배고픔이 0일 경우 체력 감소
         if (hunger.curValue == 0f)
         {
             health.Subtract(noHungerHealthDecay * Time.deltaTime);
         }
 
+        // 체력이 0 되면 플레이어 사망
         if (health.curValue == 0f)
         {
             Die();
@@ -65,7 +68,8 @@ public class PlayerCondition : MonoBehaviour, IDamagable
 
     public void TakePhysicalDamage(int damageAmount)
     {
-        float finalDamage = damageAmount - currentDefense;
+        float finalDamage = damageAmount - currentDefense;  // 방어력이 데미지를 초과하지 않게
+
         if (finalDamage < 0) finalDamage = 0;
 
         health.Subtract(finalDamage);
@@ -88,6 +92,7 @@ public class PlayerCondition : MonoBehaviour, IDamagable
                 break;
         }
 
+        // 기존 효과 있을 시 중지 후 새 효과 적용
         if (activeEffectCoroutine != null)
         {
             StopCoroutine(activeEffectCoroutine);
@@ -99,22 +104,16 @@ public class PlayerCondition : MonoBehaviour, IDamagable
     {
         yield return new WaitForSeconds(item.duration);
 
-        switch (item.effectType)
-        {
-            case EffectType.DefenseBoost:
-                currentDefense -= item.effectValue;
-                break;
-            case EffectType.AttackBoost:
-                currentAttackPower -= item.effectValue;
-                break;
-        }
-
-        Debug.Log($"{item.displayName} 효과 끝");
+        // 효과 해제
+        RemoveItemEffect(item);
         activeEffectCoroutine = null;
     }
 
     public void RemoveItemEffect(ItemData item)
     {
+        if (item == null) return; // 예외 처리: 아이템이 null이면 실행하지 않음
+
+        // 효과 해제
         switch (item.effectType)
         {
             case EffectType.DefenseBoost:
@@ -124,8 +123,10 @@ public class PlayerCondition : MonoBehaviour, IDamagable
                 currentAttackPower -= item.effectValue;
                 break;
         }
+
+        Debug.Log($"{item.displayName} 효과 해제됨!");
     }
 
-    public float GetDefense() => currentDefense;
-    public float GetAttackPower() => currentAttackPower;
+    public float GetDefense() => currentDefense; // 현재 방어력 반환
+    public float GetAttackPower() => currentAttackPower; // 현재 공격력 반환
 }

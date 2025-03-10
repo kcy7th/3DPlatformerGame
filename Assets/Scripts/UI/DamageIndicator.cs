@@ -28,12 +28,12 @@ public class DamageIndicator : MonoBehaviour
 
     private IEnumerator FadeAway()
     {
-        float startAlpha = 0.3f;
+        float startAlpha = 0.3f;  // 초기 투명도
         float a = startAlpha;
 
         while (a > 0.0f)
         {
-            a -= (startAlpha / flashSpeed) * Time.deltaTime;
+            a -= (startAlpha / flashSpeed) * Time.deltaTime;  // 점진적으로 투명도 감소
             image.color = new Color(1f, 100f / 255f, 100f / 255f, a);
             yield return null;
         }

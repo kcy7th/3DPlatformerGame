@@ -4,10 +4,10 @@ using UnityEngine.InputSystem;
 
 public class Interaction : MonoBehaviour
 {
-    public float checkRadius = 2f;
+    public float checkRadius = 2f;  // 상호작용 가능한 거리
     public LayerMask layerMask;  
 
-    private GameObject curInteractGameObject;
+    private GameObject curInteractGameObject;  // 감지된 오브젝트
     private IInteractable curInteractable;
 
     public TextMeshProUGUI promptText;
@@ -25,7 +25,7 @@ public class Interaction : MonoBehaviour
                 ShowPrompt(); 
             }
         }
-        else
+        else  // 상호작용 가능한 오브젝트가 없을 경우
         {
             HidePrompt(); 
         }
@@ -44,7 +44,11 @@ public class Interaction : MonoBehaviour
     {
         curInteractGameObject = null;
         curInteractable = null;
-        promptText.gameObject.SetActive(false);
+
+        if (promptText != null)
+        {
+            promptText.gameObject.SetActive(false);
+        }
     }
 
     public void OnInteractInput(InputAction.CallbackContext context)

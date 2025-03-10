@@ -45,6 +45,7 @@ public class DayNightCycle : MonoBehaviour
     {
         float intensity = intensityCurve.Evaluate(time);
 
+        // 해와 달은 0.5f (180/360) 차이
         lightSource.transform.eulerAngles = (time - (lightSource == sun ? 0.25f : 0.75f)) * noon * 4.0f;
         lightSource.color = colorGradiant.Evaluate(time);
         lightSource.intensity = intensity;

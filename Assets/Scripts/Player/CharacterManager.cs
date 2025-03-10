@@ -33,6 +33,7 @@ public class CharacterManager : MonoBehaviour
         {
             if (_instance != this)
             {
+                Debug.LogWarning("Áßº¹µÈ CharacterManager");
                 Destroy(gameObject);
             }
         }
