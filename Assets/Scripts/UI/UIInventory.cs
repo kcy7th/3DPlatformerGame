@@ -135,6 +135,17 @@ public class UIInventory : MonoBehaviour
                 slots[i].Clear();
             }
         }
+
+        if (curEquipIndex == -1)
+        {
+            equipButton.SetActive(true);
+            unEquipButton.SetActive(false);
+        }
+        else
+        {
+            equipButton.SetActive(false);
+            unEquipButton.SetActive(true);
+        }
     }
 
     ItemSlot GetItemStack(ItemData data)
@@ -211,47 +222,48 @@ public class UIInventory : MonoBehaviour
 
     public void OnEquipButton()
     {
-        if (selectedItem == null || selectedItem.item == null) return;
-
-        if (curEquipIndex != -1)
+        if (curEquipIndex != -1 && curEquipIndex < slots.Length && slots[curEquipIndex].equipped)
         {
             UnEquip(curEquipIndex);
         }
 
+        if (selectedItemIndex < 0 || selectedItemIndex >= slots.Length)
+        {
+            Debug.LogError($"[OnEquipButton] selectedItemIndex ({selectedItemIndex})°¡ slots ¹è¿­ ¹üÀ§¸¦ ¹þ¾î³²!");
+            return;
+        }
+
         slots[selectedItemIndex].equipped = true;
         curEquipIndex = selectedItemIndex;
-
-        ApplyItemEffect(selectedItem.item);
-
-        Debug.Log($"{selectedItem.item.displayName} ÀåÂøµÊ");
-
-        equipButton.SetActive(false);
-        unEquipButton.SetActive(true);
-
+        CharacterManager.Instance.Player.equip.EquipNew(selectedItem);
         UpdateUI();
+
+        SelectItem(selectedItemIndex);
     }
+
     public void OnDropButton()
     {
         ThrowItem(selectedItem.item);
         RemoveSelctedItem();
     }
 
-    public void UnEquip(int index)
+    public void OnUpEquipButton()
     {
-        if (index == -1 || slots[index].item == null || !slots[index].equipped) return;
-
-        slots[index].equipped = false;
-        curEquipIndex = -1;
-
-        RemoveItemEffect(slots[index].item);
-
-        Debug.Log($"{slots[index].item.displayName} ÀåÂø ÇØÁ¦µÊ");
-
-        equipButton.SetActive(true);
-        unEquipButton.SetActive(false);
-
-        UpdateUI();
+        UnEquip(selectedItemIndex);
     }
+
+    void UnEquip(int index)
+    {
+        slots[index].equipped = false;
+        CharacterManager.Instance.Player.equip.UnEquip();
+        UpdateUI();
+
+        if (selectedItemIndex == index)
+        {
+            SelectItem(selectedItemIndex);
+        }
+    }
+
 
     void RemoveSelctedItem()
     {

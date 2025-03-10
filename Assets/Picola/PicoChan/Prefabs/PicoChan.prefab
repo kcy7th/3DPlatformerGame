@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 2874314940316285923}
   - component: {fileID: 2905255538834668170}
   - component: {fileID: 8555392573527936014}
+  - component: {fileID: 3932747820129676106}
   m_Layer: 7
   m_Name: PicoChan
   m_TagString: Untagged
@@ -199,6 +200,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 2874314940316285923}
   condition: {fileID: 0}
+  equip: {fileID: 0}
   itemData: {fileID: 0}
   dropPosition: {fileID: 3962294480462750974}
 --- !u!114 &2874314940316285923
@@ -243,8 +245,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiCondition: {fileID: 0}
   noHungerHealthDecay: 2
-  defense: 0
-  attackPower: 1
+  baseDefense: 0
+  baseAttackPower: 1
+  currentDefense: 0
+  currentAttackPower: 0
 --- !u!114 &8555392573527936014
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,6 +266,18 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   promptText: {fileID: 0}
+--- !u!114 &3932747820129676106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2350652681907635850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 371cdf7780a7d8041805d4f41538f95b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3337409448418497404
 GameObject:
   m_ObjectHideFlags: 0
