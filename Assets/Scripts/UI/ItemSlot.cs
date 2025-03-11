@@ -19,6 +19,13 @@ public class ItemSlot : MonoBehaviour
     private void Awake()
     {
         outline = GetComponent<Outline>();
+
+        quantityText = GetComponentInChildren<TextMeshProUGUI>();
+
+        if (quantityText == null)
+        {
+            Debug.LogError("[ItemSlot.Awake] quatityText null 상태");
+        }
     }
 
     private void OnEnable()
@@ -28,6 +35,18 @@ public class ItemSlot : MonoBehaviour
 
     public void Set()
     {
+        if (icon == null)
+        {
+            Debug.LogError("[ItemSlot.Set] icon이 null입니다!");
+            return;
+        }
+
+        if (item == null)
+        {
+            Debug.LogError("[ItemSlot.Set] item이 null입니다!");
+            return;
+        }
+
         icon.gameObject.SetActive(true);
         icon.sprite = item.icon;
         quantityText.text = quantity > 1 ? quantity.ToString() : string.Empty;
@@ -41,9 +60,18 @@ public class ItemSlot : MonoBehaviour
     public void Clear()
     {
         item = null;
-        icon.gameObject.SetActive(false);
-        quantityText.text = string.Empty;
+
+        if (icon != null)
+            icon.gameObject.SetActive(false);
+        else
+            Debug.LogError("[ItemSlot.Clear] icon이 null입니다!");
+
+        if (quantityText != null)
+            quantityText.text = string.Empty;
+        else
+            Debug.LogError("[ItemSlot.Clear] quatityText가 null입니다!");
     }
+
 
     public void OnClickButton()
     {

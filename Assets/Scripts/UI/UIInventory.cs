@@ -162,15 +162,21 @@ public class UIInventory : MonoBehaviour
 
     ItemSlot GetEmptySlot()
     {
-        for (int i = 0; i < slots.Length; i++)
+        if (slots == null || slots.Length == 0)
         {
-            if (slots[i].item == null)
-            {
-                return slots[i];
-            }
+            Debug.LogError("[GetEmptySlot] slots 배열이 초기화되지 않음!");
+            return null;
         }
+
+        foreach (var slot in slots)
+        {
+            if (slot.item == null)
+                return slot;
+        }
+
         return null;
     }
+
 
     public void ThrowItem(ItemData data)
     {
